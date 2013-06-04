@@ -43,6 +43,7 @@
   
   function del() {
     var doneCb = function () {
+      $('#' + id).remove();
       clear();
       deleteBtn[0].disabled = true;
     };
@@ -123,7 +124,6 @@
     var ws = new WebSocket('ws://localhost:8080');
     ws.onmessage = function (event) {
       console.log('got WebSocket message "' + event.data + '"');
-      if (!event.data) return;
 
       var obj = JSON.parse(event.data);
       console.log('received', JSON.stringify(obj));

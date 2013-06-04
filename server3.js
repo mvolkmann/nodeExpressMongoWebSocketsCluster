@@ -101,7 +101,6 @@ function setupServer(collection) {
     wss.on('connection', function (ws) {
       wsArray.push(ws);
     });
-
     server.listen(8080);
   }
 
