@@ -18,3 +18,8 @@ label {
 .form-horizontal {
   float: left;
 }
+
+.hero-unit {
+  margin-right: 20px;
+  padding: 30px;
+}

@@ -6,32 +6,23 @@
   var deleteBtn, nameList;
   var URL_PREFIX = 'http://localhost:3000/addressbook/';
 
-  function Person(firstName, lastName, email, phone) {
-    this.firstName = firstName;
-    this.lastName = lastName;
-    this.email = email;
-    this.phone = phone;
-  }
-
   function add() {
     var id = getId();
 
     var doneCb = function () {
       insertId(id);
-      nameList.val(getKey());
+      nameList.val(getName(id));
     };
 
     $.ajax(URL_PREFIX + id, {
       type: 'PUT',
       contentType: 'application/json',
       data: JSON.stringify(makePerson())
-    }).done(doneCb).error(failCb);
+    }).done(doneCb).error(errorCb);
   }
 
   function addId(id) {
-    var pieces = id.split('-');
-    var key = pieces.join(', ');
-    nameList.append($('<option>', {id: id}).text(key));
+    nameList.append($('<option>', {id: id, value: id}).text(getName(id)));
   }
 
   function clear() {
@@ -43,16 +34,16 @@
   
   function del() {
     var doneCb = function () {
-      $('#' + id).remove();
+      $('#' + id).remove(); // deletes corresponding option
       clear();
       deleteBtn[0].disabled = true;
     };
 
     var id = getId();
-    $.ajax(URL_PREFIX + id, {type: 'DELETE'}).done(doneCb).error(failCb);
+    $.ajax(URL_PREFIX + id, {type: 'DELETE'}).done(doneCb).error(errorCb);
   }
 
-  function failCb(err) {
+  function errorCb(err) {
     alert(err.toString());
     console.log('error:', err);
   }
@@ -61,15 +52,12 @@
     return lastNameInput.val() + '-' + firstNameInput.val();
   }
 
-  function getKey() {
-    return lastNameInput.val() + ', ' + firstNameInput.val();
+  function getName(id) {
+    return id.split('-').join(', ');
   }
 
   function insertId(id) {
-    var pieces = id.split('-');
-    var key = pieces.join(', ');
-
-    var option = $('<option>', {id: id}).text(key);
+    var option = $('<option>', {id: id, value: id}).text(getName(id));
 
     var added = false;
     nameList.children().each(function (index, op) {
@@ -90,24 +78,20 @@
       ids.sort().forEach(addId);
     };
 
-    $.getJSON(URL_PREFIX + 'list').done(doneCb).fail(failCb);
+    $.getJSON(URL_PREFIX + 'list').done(doneCb).fail(errorCb);
   }
 
   function makePerson() {
-    return new Person(
-      firstNameInput.val(),
-      lastNameInput.val(),
-      emailInput.val(),
-      phoneInput.val());
+    return {
+      firstName: firstNameInput.val(),
+      lastName: lastNameInput.val(),
+      email: emailInput.val(),
+      phone: phoneInput.val()
+    };
   }
 
   function select(event) {
-    var option = $(event.target);
-    // If the select element was selected instead of one of its options ...
-    if (option.prop('tagName') !== 'OPTION') return;
-
-    var id = option.attr('id');
-    var key = option.text();
+    var id = nameList.val();
 
     var doneCb = function (person) {
       firstNameInput.val(person.firstName);
@@ -117,7 +101,7 @@
       deleteBtn[0].disabled = false;
     };
 
-    $.getJSON(URL_PREFIX + id).done(doneCb).fail(failCb);
+    $.getJSON(URL_PREFIX + id).done(doneCb).fail(errorCb);
   }
 
   function setupWebSocket() {
@@ -150,6 +134,6 @@
 
     $('#add').click(add);
     deleteBtn.click(del);
-    nameList.click(select);
+    nameList.change(select);
   });
 }());
