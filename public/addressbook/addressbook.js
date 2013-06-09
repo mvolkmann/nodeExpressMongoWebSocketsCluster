@@ -133,6 +133,7 @@
     load();
 
     $('#add').click(add);
+    deleteBtn[0].disabled = true;
     deleteBtn.click(del);
     nameList.change(select);
   });
