@@ -54,7 +54,7 @@
 
     // Creates or updates a person.
     svc.put = function (person, cb) {
-      delete person._id; // remove MongoDB id from person object
+      delete person._id; // removes MongoDB id from person object
       var id = getIdFromPerson(person);
       $http({method: 'PUT', url: URL_PREFIX + id, data: person})
         .success(cb).error(errorCb);
