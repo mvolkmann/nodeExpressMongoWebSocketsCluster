@@ -55,7 +55,7 @@
         type: 'PUT',
         contentType: 'application/json',
         data: JSON.stringify(person)
-      }).done(doneCb).error(errorCb);
+      }).done(doneCb).fail(failCb);
     },
 
     del: function () {
@@ -67,7 +67,7 @@
         new FormView({model: null}).render();
       };
 
-      $.ajax(URL_PREFIX + id, {type: 'DELETE'}).done(doneCb).error(errorCb);
+      $.ajax(URL_PREFIX + id, {type: 'DELETE'}).done(doneCb).fail(failCb);
     }
   });
 
@@ -99,11 +99,11 @@
       };
 
       var id = this.$el.val(); // gets value of select
-      $.getJSON(URL_PREFIX + id).done(processPerson).fail(errorCb);
+      $.getJSON(URL_PREFIX + id).done(processPerson).fail(failCb);
     }
   });
 
-  function errorCb(err) {
+  function failCb(err) {
     alert(err.toString());
     console.log('error:', err);
   }
@@ -115,7 +115,7 @@
       new ListView({collection: ids}).render();
     };
 
-    $.getJSON(URL_PREFIX + 'list').done(processIds).fail(errorCb);
+    $.getJSON(URL_PREFIX + 'list').done(processIds).fail(failCb);
   }
 
   $(function () {

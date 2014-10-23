@@ -45,7 +45,7 @@
 
   function errorCb(err) {
     alert(err.toString());
-    console.log('error:', err);
+    console.error('error:', err);
   }
 
   function getId() {
